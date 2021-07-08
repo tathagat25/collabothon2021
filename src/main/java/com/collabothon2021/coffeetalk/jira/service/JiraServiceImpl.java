@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.collabothon2021.coffeetalk.jira.model.id.Root;
@@ -76,11 +78,17 @@ public class JiraServiceImpl implements JiraService {
 		HttpEntity<String> request = getSecureRequest();
 		String url = baseUrl + "issue/" + id;
 		
-		ResponseEntity<Root> response = restTemplate.exchange(url, HttpMethod.GET, request, Root.class);
+		try {
+			ResponseEntity<Root> response = restTemplate.exchange(url, HttpMethod.GET, request, Root.class);
+			return response.getBody();
+		} catch(HttpClientErrorException e) {
+			if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+				return null;
+			} else {
+				throw e;
+			}
+		}
 		
-//		Root root = new Gson().fromJson(response.getBody(), Root.class);
-		
-		return response.getBody();
 	}
 
 	@Override
