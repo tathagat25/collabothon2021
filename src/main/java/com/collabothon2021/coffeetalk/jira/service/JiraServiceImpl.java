@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +27,7 @@ import com.collabothon2021.coffeetalk.jira.model.search.SearchResultRoot;
  */
 @Component
 public class JiraServiceImpl implements JiraService {
-//	private static final Logger log = LoggerFactory.getLogger(JiraServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(JiraServiceImpl.class);
 
 	private RestTemplate restTemplate = new RestTemplate();
 	
@@ -97,6 +99,7 @@ public class JiraServiceImpl implements JiraService {
 		localDateTime = localDateTime.minusHours(2); // time offset to JIRA server
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
 		String createdSince = localDateTime.format(dateFormat);
+		log.info(String.format("Checking for JIRA sotries created after %s", createdSince));
 		String url = baseUrl + "search?jql=created>'{datetime}'";
 		
 		ResponseEntity<SearchResultRoot> response = restTemplate.exchange(url, HttpMethod.GET, request, SearchResultRoot.class, createdSince);

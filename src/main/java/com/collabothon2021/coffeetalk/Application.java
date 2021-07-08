@@ -17,6 +17,7 @@ import com.collabothon2021.coffeetalk.jira.model.search.Issue;
 import com.collabothon2021.coffeetalk.jira.model.search.SearchResultRoot;
 import com.collabothon2021.coffeetalk.jira.service.JiraService;
 import com.collabothon2021.coffeetalk.keyword.KeywordService;
+import com.collabothon2021.coffeetalk.twitter.service.TwitterService;
 
 /**
  * main class
@@ -34,6 +35,9 @@ public class Application {
 	@Autowired
 	private KeywordService keywordService;
 	
+	@Autowired
+	private TwitterService twitterService;
+	
 	@Value("${refreshRate}")
 	private long refreshRate;
 	
@@ -47,6 +51,8 @@ public class Application {
 	public void chcekForNewStories() {
 		log.debug("BEGIN");
 		
+		log.info(String.format("Refresh interval in seconds %s", refreshRate/1000));
+		
 		// get stories created since we checked last time
 		LocalDateTime localDateTime = LocalDateTime.now();
 		localDateTime = localDateTime.minusSeconds(refreshRate/1000); // minus the refresh rate so we compare with last check time
@@ -54,6 +60,8 @@ public class Application {
 		
 		if (found.issues.isEmpty()) {
 			return;
+		} else {
+			log.info(String.format("found %s issue/s", found.issues.size()));
 		}
 		
 		// filter with keywords
@@ -61,9 +69,14 @@ public class Application {
 		
 		if (filteredIssues.isEmpty()) {
 			return;
+		} else {
+			log.info(String.format("found %s issue/s matching our keywords", filteredIssues.size()));
 		}
 		
 		// create tweet
+		for (Issue key : filteredIssues.keySet()) {
+			twitterService.tweet(key.fields.summary, filteredIssues.get(key));
+		}
 		
 		// TODO?
 		
