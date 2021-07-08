@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.collabothon2021.coffeetalk.jira.model.id.Root;
@@ -23,7 +27,7 @@ import com.collabothon2021.coffeetalk.jira.model.search.SearchResultRoot;
  */
 @Component
 public class JiraServiceImpl implements JiraService {
-//	private static final Logger log = LoggerFactory.getLogger(JiraServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(JiraServiceImpl.class);
 
 	private RestTemplate restTemplate = new RestTemplate();
 	
@@ -76,11 +80,17 @@ public class JiraServiceImpl implements JiraService {
 		HttpEntity<String> request = getSecureRequest();
 		String url = baseUrl + "issue/" + id;
 		
-		ResponseEntity<Root> response = restTemplate.exchange(url, HttpMethod.GET, request, Root.class);
+		try {
+			ResponseEntity<Root> response = restTemplate.exchange(url, HttpMethod.GET, request, Root.class);
+			return response.getBody();
+		} catch(HttpClientErrorException e) {
+			if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+				return null;
+			} else {
+				throw e;
+			}
+		}
 		
-//		Root root = new Gson().fromJson(response.getBody(), Root.class);
-		
-		return response.getBody();
 	}
 
 	@Override
@@ -89,6 +99,7 @@ public class JiraServiceImpl implements JiraService {
 		localDateTime = localDateTime.minusHours(2); // time offset to JIRA server
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
 		String createdSince = localDateTime.format(dateFormat);
+		log.info(String.format("Checking for JIRA sotries created after %s", createdSince));
 		String url = baseUrl + "search?jql=created>'{datetime}'";
 		
 		ResponseEntity<SearchResultRoot> response = restTemplate.exchange(url, HttpMethod.GET, request, SearchResultRoot.class, createdSince);
