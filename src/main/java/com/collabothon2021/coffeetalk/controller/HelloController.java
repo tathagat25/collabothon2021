@@ -3,10 +3,7 @@ package com.collabothon2021.coffeetalk.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.collabothon2021.coffeetalk.controller.dto.AudioFileDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,5 +52,18 @@ public class HelloController {
 		}
 
 		return Collections.emptyList();
+	}
+
+	/**
+	 * curl -X POST --header "Content-Type: application/text" --data 'database task 93 + security' http://localhost:8080/tweet
+	 * @param message
+	 * @return
+	 */
+	@PostMapping("/chatbot")
+	@CrossOrigin
+	public String askChatbot(@RequestBody String message) {
+		return message.toLowerCase(Locale.ROOT).contains("database") ?
+				"A database is a systematic collection of data. They support electronic storage and manipulation of data. Databases make data management easy." :
+				"The chatbot does not know the answer. Do you want to ask your colleagues and tweet your question?";
 	}
 }

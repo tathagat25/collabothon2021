@@ -15,10 +15,14 @@
 </head>
 
 <body class="theme-light">
-  <button id="recordButton">Start Recording</button><br /><br />
-  <input id="question" type="text" /><br /><br />
-  <button id="tweet">Tweet Question</button><br /><br />
+  <div class="container">
+  <button id="recordButton">Record your question</button><br /><br />
+  <h4><label id="questionLabel" for="question">Your Question</label></h4>
+  <textarea id="question" name="question"></textarea><br /> <br />
+  <button id="tweet">Tweet Question</button>
+  <button id="chatbot">Ask colla<b>BOT</b>hon</button><br /><br />
   <p id="warn" hidden></p>
+</div>
 </body>
 
 </html>

@@ -1,8 +1,41 @@
-html, body, div.surface, div.panel {
+* {
+    box-sizing: border-box;
+}
+html {
     height: 100%;
-    margin: 0;
+    background-color: white;
 }
 
-div.panel {
-    padding: 15px;
+body {
+    padding: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex-direction: column;
+}
+
+.container {
+    background-color: #D7DAF9;
+    border: 2px solid #0C0D18;
+    width: 27rem;
+    padding: 2rem;
+    border-radius: 2rem;
+}
+
+button {
+    background-color: #464EB8;
+    color: #eee;
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+    width: 10rem;
+}
+
+#tweet {
+    margin-right: 1rem;
+}
+
+textarea {
+    width: 21rem;
+    height: 5rem;
 }

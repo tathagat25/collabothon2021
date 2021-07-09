@@ -1,6 +1,7 @@
 (function () {
     'use strict';
 
+    const hostUrl = "https://020bb06c26ae.ngrok.io";
     const recorder = new MicRecorder({
         bitRate: 128
       });
@@ -8,6 +9,7 @@
     const questionInput = document.getElementById("question");
     const tweetButton = document.getElementById("tweet");
     const warningParagraph = document.getElementById("warn");
+    const chatbotButton = document.getElementById("chatbot");
 
     // Call the initialize API first
     microsoftTeams.initialize();
@@ -53,9 +55,28 @@
         });
     });
 
+    chatbotButton.addEventListener("click", function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", hostUrl + "/chatbot", false);
+        xhttp.setRequestHeader("Content-Type", "application/text; charset=UTF-8");
+        warningParagraph.hidden = false;
+        try {
+            xhttp.send(questionInput.value);
+            if (xhttp.status != 200) {
+                warningParagraph.innerText = "An error occurred, please try again!";
+            } else {
+                warningParagraph.innerText = xhttp.responseText;
+
+            }
+        } catch (err) {
+            console.log(err);
+            warningParagraph.innerText = "An error occurred, please try again!";
+        }
+    });
+
     tweetButton.addEventListener("click", function () {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "http://localhost:8080/tweet", false);
+        xhttp.open("POST", hostUrl + "/tweet", false);
         xhttp.setRequestHeader("Content-Type", "application/text; charset=UTF-8");
         warningParagraph.hidden = false;
         try {
@@ -104,20 +125,16 @@
                 request.setRequestHeader("Content-type", "audio/mpeg")
                 request.send(file);
                 var response = JSON.parse(request.responseText);
-
                 console.log(response);
 
                 var text = response.results[response.result_index].alternatives[0].transcript;
-                questionInput.value = text;
-                console.log(text);
-            
+                questionInput.value = text;       
             }).catch((e) => {
             alert('We could not retrieve your message');
             console.log(e);
             });
     }
 
-    // Set the desired theme
     function setTheme(theme) {
         if (theme) {
             // Possible values for theme: 'default', 'light', 'dark' and 'contrast'
@@ -126,7 +143,6 @@
         }
     }
 
-    // Create the URL that Microsoft Teams will load in the tab. You can compose any URL even with query strings.
     function createTabUrl() {
         var tabChoice = document.getElementById('tabChoice');
         var selectedTab = tabChoice[tabChoice.selectedIndex].value;
