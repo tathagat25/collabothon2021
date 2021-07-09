@@ -18,7 +18,7 @@ body {
 .container {
     background-color: #D7DAF9;
     border: 2px solid #0C0D18;
-    width: 27rem;
+    width: 26rem;
     padding: 2rem;
     border-radius: 2rem;
 }
@@ -26,9 +26,11 @@ body {
 button {
     background-color: #464EB8;
     color: #eee;
-    padding: 0.5rem 1rem;
+    padding: 0.7rem 0rem;
     border-radius: 0.2rem;
     width: 10rem;
+    border: none;
+    cursor: pointer;
 }
 
 #tweet {
@@ -38,4 +40,10 @@ button {
 textarea {
     width: 21rem;
     height: 5rem;
+}
+
+p {
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color: white;
 }
