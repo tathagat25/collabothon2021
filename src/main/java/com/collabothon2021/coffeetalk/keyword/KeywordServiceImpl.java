@@ -15,7 +15,7 @@ import com.collabothon2021.coffeetalk.jira.model.search.Issue;
 @Component
 public class KeywordServiceImpl implements KeywordService {
 	private static final Logger log = LoggerFactory.getLogger(KeywordServiceImpl.class);
-	private final List<String> keywords = Arrays.asList("database", "security", "interface", "description", "test", "framework");
+	private final List<String> keywords = Arrays.asList("database", "security", "interface", "description", "test", "framework", "coffee");
 
 	@Override
 	public Map<Issue, List<String>> filterIssues(List<Issue> issues) {
