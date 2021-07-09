@@ -1,20 +1,23 @@
 package com.collabothon2021.coffeetalk.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.collabothon2021.coffeetalk.controller.dto.AudioFileDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import com.collabothon2021.coffeetalk.jira.model.search.Fields;
 import com.collabothon2021.coffeetalk.jira.model.search.Issue;
 import com.collabothon2021.coffeetalk.keyword.KeywordService;
 import com.collabothon2021.coffeetalk.twitter.service.TwitterService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class HelloController {
@@ -36,6 +39,7 @@ public class HelloController {
 	 * @return
 	 */
 	@PostMapping("/tweet")
+	@CrossOrigin
 	public List<String> tweet(@RequestBody String message) {
 		Issue issue = new Issue();
 		issue.fields = new Fields();
@@ -46,11 +50,10 @@ public class HelloController {
 		for (Issue key : filteredIssues.keySet()) {
 			List<String> hashtags = filteredIssues.get(key);
 			twitterService.tweet(key.fields.summary, hashtags);
-			
+
 			return hashtags;
 		}
-		
+
 		return Collections.emptyList();
 	}
-
 }
