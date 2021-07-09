@@ -127,8 +127,13 @@
                 var response = JSON.parse(request.responseText);
                 console.log(response);
 
-                var text = response.results[response.result_index].alternatives[0].transcript;
-                questionInput.value = text;       
+                if (response.results.length == 0) {
+                    warningParagraph.hidden = false;
+                    warningParagraph.innerText = "Sorry, we didn't quite catch what you said. Could you please repeat?";
+                } else {
+                    var text = response.results[response.result_index].alternatives[0].transcript;
+                    questionInput.value = text; 
+                }      
             }).catch((e) => {
             alert('We could not retrieve your message');
             console.log(e);

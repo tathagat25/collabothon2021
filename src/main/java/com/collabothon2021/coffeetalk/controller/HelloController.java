@@ -62,8 +62,14 @@ public class HelloController {
 	@PostMapping("/chatbot")
 	@CrossOrigin
 	public String askChatbot(@RequestBody String message) {
-		return message.toLowerCase(Locale.ROOT).contains("database") ?
-				"A database is a systematic collection of data. They support electronic storage and manipulation of data. Databases make data management easy." :
-				"The chatbot does not know the answer. Do you want to ask your colleagues and tweet your question?";
+		message = message.toLowerCase();
+
+		if (message.contains("interface")) {
+			return "C:\\temp\\fiction.txt";
+		} else if (message.contains("database")) {
+			return "A database is a systematic collection of data. They support electronic storage and manipulation of data. Databases make data management easy.";
+		} else {
+			return "CollaBOThon does not know the answer. Do you want to ask your colleagues and tweet your question?";
+		}
 	}
 }
