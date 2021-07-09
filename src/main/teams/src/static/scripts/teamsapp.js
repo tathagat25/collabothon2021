@@ -46,7 +46,7 @@
         let recordButton = document.getElementById("recordButton");
         recordButton.addEventListener("click", function () {
             isRecording = !isRecording;
-            recordButton.innerText = isRecording ? "Stop Recording" : "Start Recording";
+            recordButton.innerText = isRecording ? "Stop Recording" : "Record another question";
             if (!isRecording) {
                 stop();
             } else {
