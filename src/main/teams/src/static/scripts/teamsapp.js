@@ -5,6 +5,9 @@
         bitRate: 128
       });
     let isRecording = false;
+    const questionInput = document.getElementById("question");
+    const tweetButton = document.getElementById("tweet");
+    const warningParagraph = document.getElementById("warn");
 
     // Call the initialize API first
     microsoftTeams.initialize();
@@ -40,14 +43,39 @@
     document.addEventListener('DOMContentLoaded', function () {
         let recordButton = document.getElementById("recordButton");
         recordButton.addEventListener("click", function () {
-            if (isRecording) {
+            isRecording = !isRecording;
+            recordButton.innerText = isRecording ? "Stop Recording" : "Start Recording";
+            if (!isRecording) {
                 stop();
             } else {
                 start();
-            }
-            isRecording = !isRecording;
-            recordButton.innerText = isRecording ? "Stop Recording" : "Start Recording";
+            }      
         });
+    });
+
+    tweetButton.addEventListener("click", function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:8080/tweet", false);
+        xhttp.setRequestHeader("Content-Type", "application/text; charset=UTF-8");
+        warningParagraph.hidden = false;
+        try {
+            xhttp.send(questionInput.value);
+            if (xhttp.status != 200) {
+                warningParagraph.innerText = "An error occurred, please try again!";
+            } else {
+                let response = JSON.parse(xhttp.responseText);
+                response = response.map(str => "#" + str);
+                response = response.join(" ");
+                if (response.length == 0) {
+                    warningParagraph.innerText = "No special hashtags were tweeted with your question. Just the usual ones. #aloha #collabothon2021 #coffeetalk";
+                } else {
+                    warningParagraph.innerText = 'These hashtags were tweeted with your question: ' + response + " #aloha #collabothon2021 #coffeetalk";
+                }
+            }
+        } catch (err) {
+            console.log(err);
+            warningParagraph.innerText = "An error occurred, please try again!";
+        }
     });
 
     function start() {
@@ -69,17 +97,19 @@
                     type: blob.type,
                     lastModified: Date.now()
                 });
-                console.log(buffer);
-                console.log(blob);
-                console.log(file);
 
-        
-                var oReq = new XMLHttpRequest();
-                oReq.open("POST", "http://localhost:8080/speech/to/text", false);
-                oReq.send(file);
-            
-                const player = new Audio(URL.createObjectURL(file));
-                player.play();
+                var request = new XMLHttpRequest();
+                request.open("POST", "https://api.eu-gb.speech-to-text.watson.cloud.ibm.com/instances/6e80aa64-3f40-4fc0-ad31-1aef35f2faa1/v1/recognize", false)
+                request.setRequestHeader("authorization", "Basic YXBpa2V5OmVtcFpqSkZ4N2RyMm91UU9YTmx3WUlDSzQ3Q1VvWVNtb1RlcWx2WWJ3emNv");
+                request.setRequestHeader("Content-type", "audio/mpeg")
+                request.send(file);
+                var response = JSON.parse(request.responseText);
+
+                console.log(response);
+
+                var text = response.results[response.result_index].alternatives[0].transcript;
+                questionInput.value = text;
+                console.log(text);
             
             }).catch((e) => {
             alert('We could not retrieve your message');
