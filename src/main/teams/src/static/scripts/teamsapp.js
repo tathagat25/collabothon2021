@@ -63,16 +63,23 @@
             .stop()
             .getMp3().then(([buffer, blob]) => {
                 console.log("stopped recording");
-            // do what ever you want with buffer and blob
-            // Example: Create a mp3 file and play
-            const file = new File(buffer, 'me-at-thevoice.mp3', {
-                type: blob.type,
-                lastModified: Date.now()
-            });
-            console.log(file);
+                // do what ever you want with buffer and blob
+                // Example: Create a mp3 file and play
+                const file = new File(buffer, 'me-at-thevoice.mp3', {
+                    type: blob.type,
+                    lastModified: Date.now()
+                });
+                console.log(buffer);
+                console.log(blob);
+                console.log(file);
+
+        
+                var oReq = new XMLHttpRequest();
+                oReq.open("POST", "http://localhost:8080/speech/to/text", false);
+                oReq.send(file);
             
-            const player = new Audio(URL.createObjectURL(file));
-            player.play();
+                const player = new Audio(URL.createObjectURL(file));
+                player.play();
             
             }).catch((e) => {
             alert('We could not retrieve your message');
