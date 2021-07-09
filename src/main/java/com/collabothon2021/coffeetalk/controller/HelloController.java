@@ -56,14 +56,4 @@ public class HelloController {
 
 		return Collections.emptyList();
 	}
-
-	@CrossOrigin
-	@PostMapping(value = "/speech/to/text", consumes = "audio/mp3")
-	public String convert(@RequestBody byte[] blob) throws IOException {
-		FileOutputStream fos = new FileOutputStream("C:\\Users\\benja\\Downloads\\test.mp3");
-		fos.write(blob);
-		fos.close();
-		return "Hello World";
-	}
-
 }

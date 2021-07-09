@@ -11,11 +11,14 @@
   </link>
   <script src="https://unpkg.com/mic-recorder-to-mp3@2.2.1/dist/index.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
-  <script src="/scripts/teamsapp.js"></script>
+  <script src="/scripts/teamsapp.js" defer></script>
 </head>
 
 <body class="theme-light">
-  <button id="recordButton">Start Recording</button>
+  <button id="recordButton">Start Recording</button><br /><br />
+  <input id="question" type="text" /><br /><br />
+  <button id="tweet">Tweet Question</button><br /><br />
+  <p id="warn" hidden></p>
 </body>
 
 </html>
