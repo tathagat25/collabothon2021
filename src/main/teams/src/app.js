@@ -49,8 +49,6 @@ const messageExtension = new MessageExtension();
 
 // Listen for incoming requests.
 server.post('/messages', (req, res) => {
-    console.log(res);
-    console.log(req);
     adapter.processActivity(req, res, async (context) => {
         if (context.activity.type === ActivityTypes.Invoke)
             await messageExtension.run(context);

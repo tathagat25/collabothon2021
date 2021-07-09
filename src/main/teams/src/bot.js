@@ -17,6 +17,8 @@ export const adapter = new BotFrameworkAdapter({
     appPassword: config.get('bot.appPassword'),
 });
 
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
 adapter.onTurnError = async (context, error) => {
     const errorMsg = error.message
         ? error.message
@@ -47,8 +49,27 @@ export class EchoBot extends TeamsActivityHandler {
         this.onMessage(async (context, next) => {
             TurnContext.removeRecipientMention(context.activity);
             const text = context.activity.text.trim().toLocaleLowerCase();
-            // TODO send message to REST API here
-            await context.sendActivity('These hashtags were tweeted with your question: ' + text);
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "http://localhost:8080/tweet", false);
+            xhttp.setRequestHeader("Content-Type", "application/text; charset=UTF-8");
+            try {
+                xhttp.send(text);
+                if (xhttp.status != 200) {
+                    await context.sendActivity("An error occurred, please try again!");
+                } else {
+                    let response = JSON.parse(xhttp.responseText);
+                    response = response.map(str => "#" + str);
+                    response = response.join(" ");
+                    if (response.length == 0) {
+                        await context.sendActivity("No special hashtags were tweeted with your question. Just the usual ones. #aloha #collabothon2021 #coffeetalk");
+                    } else {
+                        await context.sendActivity('These hashtags were tweeted with your question: ' + response + " #aloha #collabothon2021 #coffeetalk");
+                    }
+                }
+            } catch (err) {
+                console.log(err);
+                await context.sendActivity("An error occurred, please try again!");
+            }
         });
     }
 }

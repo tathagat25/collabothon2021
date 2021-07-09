@@ -1,6 +1,6 @@
 {
     "app": {
-        "baseUri": "https://1727ee04b249.ngrok.io",
+        "baseUri": "https://706deae7b9f7.ngrok.io",
         "appId": "6065ef11-d7f4-4165-928c-f071f6bbf9f7",
         "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
     },
